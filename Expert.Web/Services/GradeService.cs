@@ -33,19 +33,22 @@ public class GradeService : IGradeService
 		var mappedGetter = new UserResultDto
 		{
 			Id = getter.Id,
-			FirtsName = getter.FirtsName,
-			LastName = getter.LastName
+			FirstName = getter.FirstName,
+			LastName = getter.LastName,
+			UserName = getter.UserName
 		};
 		var mappedSetter = new UserResultDto
 		{
-			Id = getter.Id,
-			FirtsName = getter.FirtsName,
-			LastName = getter.LastName
+			Id = setter.Id,
+			FirstName = setter.FirstName,
+			LastName = setter.LastName,
+			UserName = setter.UserName
 		};
 
 		return new GradeResultDto
 		{
 			Score = createdGrade.Score,
+			Setter = mappedSetter,
 			Getter = mappedGetter
 		};
 	}
@@ -63,7 +66,7 @@ public class GradeService : IGradeService
 	public async ValueTask<IEnumerable<GradeResultDto>> GetAllAsync()
 	{
 		var grades = this.appDbContext.Grades.GroupBy(grade => grade.GetterId);
-
+	
 		var result = new List<GradeResultDto>();
         foreach (var grade in grades)
         {
@@ -71,10 +74,11 @@ public class GradeService : IGradeService
 			var mappedGetter = new UserResultDto
 			{
 				Id = getter.Id,
-				FirtsName = getter.FirtsName,
-				LastName = getter.LastName
+				FirstName = getter.FirstName,
+				LastName = getter.LastName,
+				UserName = getter.UserName
 			};
-
+			
 			result.Add(new GradeResultDto
 			{
 				Getter = mappedGetter,
@@ -92,10 +96,11 @@ public class GradeService : IGradeService
 		var mappedGetter = new UserResultDto
 		{
 			Id = getter.Id,
-			FirtsName = getter.FirtsName,
-			LastName = getter.LastName
+			FirstName = getter.FirstName,
+			LastName = getter.LastName,
+			UserName = getter.UserName
 		};
-
+		
 		return new GradeResultDto
 		{
 			Getter = mappedGetter,

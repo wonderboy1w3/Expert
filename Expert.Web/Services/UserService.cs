@@ -4,6 +4,7 @@ using Expert.Web.Entities;
 using Expert.Web.Exceptions;
 using Expert.Web.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Expert.Web.Services;
 
@@ -19,9 +20,10 @@ public class UserService : IUserService
 	{
 		var createdUser = (await this.appDbContext.Users.AddAsync(new User
 		{
-			FirtsName = dto.FirtsName,
+			FirstName = dto.FirstName,
 			LastName = dto.LastName,
-			Type = dto.Type,
+			UserName = dto.UserName,
+			Password = dto.Password
 		})).Entity;
 
 		await this.appDbContext.SaveChangesAsync();
@@ -30,7 +32,8 @@ public class UserService : IUserService
 		{
 			Id = createdUser.Id,
 			LastName = createdUser.LastName,
-			FirtsName = createdUser.FirtsName
+			FirstName = createdUser.FirstName,
+			UserName = dto.UserName
 		};
 	}
 
@@ -56,8 +59,9 @@ public class UserService : IUserService
 			result.Add(new UserResultDto
 			{
 				Id = user.Id,
-				FirtsName = user.FirtsName,
+				FirstName = user.FirstName,
 				LastName =  user.LastName,
+				UserName = user.UserName
 			});
         }
 
@@ -73,7 +77,27 @@ public class UserService : IUserService
 		{
 			Id = user.Id,
 			LastName = user.LastName,
-			FirtsName = user.FirtsName
+			FirstName = user.FirstName,
+			UserName = user.UserName
 		};
+	}
+
+	public async ValueTask<UserResultDto> CheckAsync(string login, string password)
+	{
+		if (appDbContext.Users.Count() > 0)
+		{
+			var user = await this.appDbContext.Users.FirstOrDefaultAsync(user => user.UserName.Equals(login.ToLower()))
+				       ?? throw new CustomException(404, "User is not found");
+			
+			if(user.Password == password)
+				return new UserResultDto
+				{
+					Id = user.Id,
+					LastName = user.LastName,
+					FirstName = user.FirstName,
+					UserName = user.UserName
+				};
+		}
+		throw new CustomException(404, "User is not found");
 	}
 }

@@ -3,5 +3,6 @@
 public class GradeResultDto
 {
 	public double Score { get; set; }
+	public UserResultDto Setter { get; set; }
 	public UserResultDto Getter { get; set; }
 }

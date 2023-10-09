@@ -1,0 +1,31 @@
+@model IEnumerable<Expert.Web.DTOs.UserResultDto>
+
+@{
+    Layout = null;
+}
+    
+<h2>User List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is not null)
+        {
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

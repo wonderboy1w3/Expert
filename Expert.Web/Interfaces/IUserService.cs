@@ -8,4 +8,5 @@ public interface IUserService
 	ValueTask<bool> DeleteAsync(long id);
 	ValueTask<UserResultDto> GetAsync(long id);
 	ValueTask<IEnumerable<UserResultDto>> GetAllAsync(UserType type);
+	ValueTask<UserResultDto> CheckAsync(string login, string password);
 }

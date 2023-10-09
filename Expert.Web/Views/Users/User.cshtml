@@ -1,0 +1,36 @@
+@model (Expert.Web.DTOs.UserResultDto, Expert.Web.DTOs.GradeResultDto)
+
+@{
+    ViewBag.Title = "User Profile";
+}
+
+<h2>User Profile</h2>
+
+<div>
+    <strong>First Name:</strong> @Model.Item1.FirstName
+</div>
+<div>
+    <strong>Last Name:</strong> @Model.Item1.LastName
+</div>
+<div>
+    <strong>Score:</strong> @Model.Item2.Score
+</div>
+
+<h3>Grades</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Score</th>
+        <th>Getter</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var grade in Model.Item1.Grades)
+    {
+        <tr>
+            <td>@grade.Score</td>
+            <td>@grade.Getter.FirstName @grade.Getter.LastName</td>
+        </tr>
+    }
+    </tbody>
+</table>
