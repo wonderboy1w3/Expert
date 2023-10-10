@@ -25,9 +25,10 @@ public class UsersController : Controller
     
     public async Task<IActionResult> Index(UserResultDto dto = null)
     {
+        var user = await _userService.GetAsync(dto.Id);
         var users = await _userService.GetAllAsync();
         var grades = await _gradeService.GetAllAsync();
-        return View(new UserViewModel() { User = dto, Users = users, Grades = grades});
+        return View(new UserViewModel() { User = user, Users = users, Grades = grades});
     }
 
     public IActionResult Login()
