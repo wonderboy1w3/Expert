@@ -17,6 +17,12 @@ public class GradeService : IGradeService
 
 	public async ValueTask<GradeResultDto> CreateAsync(GradeCreationDto dto)
 	{
+		var existGetter = appDbContext.Users.Find(dto.GetterId);
+		var existSetter = appDbContext.Users.Find(dto.SetterId);
+		
+		if (existGetter is null || existSetter is null)
+			throw new CustomException(401, "This user not found");
+		
 		var grade = await appDbContext.Grades
 			.FirstOrDefaultAsync(x => x.GetterId == dto.GetterId && x.SetterId == dto.SetterId);
 

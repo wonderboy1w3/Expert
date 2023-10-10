@@ -35,6 +35,10 @@
                             {
                                 <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
                             }
+                            else if (Model.User is null)
+                            {
+                                <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
+                            }
                             else
                             {
                                 <button type="submit" class="btn btn-info">Submit</button>

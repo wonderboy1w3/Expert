@@ -20,12 +20,17 @@ public class UserService : IUserService
     }
 
     public async ValueTask<UserResultDto> CreateAsync(UserCreationDto dto)
-	{
+    {
+	    var user = await appDbContext.Users.FirstOrDefaultAsync(x => x.UserName == dto.UserName.ToLower().Trim());
+
+	    if (user is not null)
+		    throw new CustomException(401, "This user already exist");
+	    
 		var createdUser = (await this.appDbContext.Users.AddAsync(new User
 		{
 			FirstName = dto.FirstName,
 			LastName = dto.LastName,
-			UserName = dto.UserName,
+			UserName = dto.UserName.ToLower().Trim(),
 			Password = dto.Password
 		})).Entity;
 
