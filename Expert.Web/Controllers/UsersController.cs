@@ -16,9 +16,9 @@ public class UsersController : Controller
         _gradeService = gradeService;
     }
     
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(UserResultDto dto = null)
     {
-        return View(await _userService.GetAllAsync(UserType.Getter));
+        return View((dto ,await _userService.GetAllAsync()));
     }
 
     public IActionResult Login()
@@ -32,8 +32,9 @@ public class UsersController : Controller
         var user = await _userService.CheckAsync(login, password);
         if (user is not null)
         {
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", user);
         }    
+        TempData["ErrorMessage"] = "Invalid username or password";
         return Redirect("/login");
     }
 
@@ -48,8 +49,8 @@ public class UsersController : Controller
     {
         var user = await _userService.CreateAsync(dto);
         if(user is null)    
-            return Redirect("/register");
-        return Redirect("/index");
+            return RedirectToAction("register");
+        return RedirectToAction("index");
     }
     
     public async Task<IActionResult> User(long id)

@@ -8,4 +8,5 @@ public interface IGradeService
 	ValueTask<bool> DeleteAsync(long id);
 	ValueTask<GradeResultDto> GetAsync(long userId);
 	ValueTask<IEnumerable<GradeResultDto>> GetAllAsync();
+	ValueTask<IEnumerable<GradeResultDto>> GetAllAsync(long userId);
 }

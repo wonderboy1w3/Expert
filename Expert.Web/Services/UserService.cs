@@ -47,10 +47,9 @@ public class UserService : IUserService
 		return true;
 	}
 
-	public async ValueTask<IEnumerable<UserResultDto>> GetAllAsync(UserType type)
+	public async ValueTask<IEnumerable<UserResultDto>> GetAllAsync()
 	{
 		var users = await this.appDbContext.Users
-			.Where(user => user.Type.Equals(type))
 			.ToListAsync();
 
 		var result = new List<UserResultDto>();

@@ -7,6 +7,6 @@ public interface IUserService
 	ValueTask<UserResultDto> CreateAsync(UserCreationDto dto);
 	ValueTask<bool> DeleteAsync(long id);
 	ValueTask<UserResultDto> GetAsync(long id);
-	ValueTask<IEnumerable<UserResultDto>> GetAllAsync(UserType type);
+	ValueTask<IEnumerable<UserResultDto>> GetAllAsync();
 	ValueTask<UserResultDto> CheckAsync(string login, string password);
 }

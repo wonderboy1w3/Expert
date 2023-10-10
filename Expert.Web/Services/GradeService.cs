@@ -17,6 +17,12 @@ public class GradeService : IGradeService
 
 	public async ValueTask<GradeResultDto> CreateAsync(GradeCreationDto dto)
 	{
+		var grade = await appDbContext.Grades
+			.FirstOrDefaultAsync(x => x.GetterId == dto.GetterId && x.SetterId == dto.SetterId);
+
+		if (grade is not null)
+			throw new CustomException(401, "You already set grade to this user");
+		
 		var createdGrade = (await this.appDbContext.Grades.AddAsync(new Grade
 		{
 			GetterId = dto.GetterId,
@@ -88,7 +94,34 @@ public class GradeService : IGradeService
 		
 		return result;
     }
-
+	
+	public async ValueTask<IEnumerable<GradeResultDto>> GetAllAsync(long userId)
+	{
+		var grades = this.appDbContext.Grades
+			.Where(x => x.GetterId == userId).GroupBy(grade => grade.GetterId);
+	
+		var result = new List<GradeResultDto>();
+		foreach (var grade in grades)
+		{
+			var getter = await this.appDbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(grade.Key));
+			var mappedGetter = new UserResultDto
+			{
+				Id = getter.Id,
+				FirstName = getter.FirstName,
+				LastName = getter.LastName,
+				UserName = getter.UserName
+			};
+			
+			result.Add(new GradeResultDto
+			{
+				Getter = mappedGetter,
+				Score = grade.Average(g => g.Score)
+			});
+		}
+		
+		return result;
+	}
+	
 	public async ValueTask<GradeResultDto> GetAsync(long userId)
 	{
 		var grades = this.appDbContext.Grades.Where(grade => grade.GetterId.Equals(userId));
