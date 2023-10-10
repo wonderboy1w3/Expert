@@ -6,7 +6,6 @@ namespace Expert.Web.Models
     {
         public UserResultDto User { get; set; }
         public IEnumerable<UserResultDto> Users { get; set; }
-        public long? UserId { get; set; }
-        public int? Score { get; set; }
+        public IEnumerable<GradeResultDto> Grades { get; set; }
     }
 }

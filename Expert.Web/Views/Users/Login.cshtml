@@ -42,6 +42,8 @@
 
                             <!-- Submit button -->
                             <button type="submit" data-mdb-ripple-color="#386f06" class="btn btn-primary btn-block">Submit</button>
+                            
+                            <div class="form-outline m-4"> Dont have account * <a asp-controller="Users" asp-action="Register">Register</a></div>
                         </form>
                         <div class="alert-danger">
                             @Html.ValidationSummary(true)

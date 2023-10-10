@@ -9,4 +9,6 @@ public interface IGradeService
 	ValueTask<GradeResultDto> GetAsync(long userId);
 	ValueTask<IEnumerable<GradeResultDto>> GetAllAsync();
 	ValueTask<IEnumerable<GradeResultDto>> GetAllAsync(long userId);
+	ValueTask<int> GetAverageAsync(long userId);
+	ValueTask<IEnumerable<(long UserId, int Average)>> GetAllAverageAsync();
 }

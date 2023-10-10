@@ -1,25 +1,67 @@
-﻿@using Expert.Web.DTOs;
-@model UserViewModel;
-    
+﻿@using Expert.Web.DTOs
+@model UserViewModel
+
 <table class="table table-hover">
     <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Firstname</th>
             <th scope="col">Lastname</th>
-            <th scope="col"></th>
-            </tr>
+            <th scope="col">Score</th>
+            <th scope="col">Set Score</th>
+            <th scope="col"></th> <!-- Submit Button Column -->
+        </tr>
     </thead>
-    @foreach(var item in Model.Users)
-    {
-        <tbody>
-            <tr>
-                <th>@item.Id</th>
-                <th>@item.FirstName</th>
-                <th>@item.LastName</th>
-                <th><input type="number" id="typeNumber" asp-for="Score" class="form-control"/></th>
-                <th><button type="button" asp-action="index" class="btn btn-info">Submit</button></th>
-            </tr>
-        </tbody>
-    }
+    <tbody>
+        @foreach (var item in Model.Users)
+        {
+            @if (item.Id != Model.User.Id)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Score</td>
+                    <td>
+                        <input type="number" name="score" class="form-control"
+                               min="0" max="20" step="1" data-id="@item.Id" />
+                    </td>
+                    <td>
+                        <form asp-controller="Grades" asp-action="Create" method="post" onsubmit="return confirm('Are you sure you want to submit this form?');">
+                            <input type="hidden" name="SetterId" value="@Model.User.Id" />
+                            <input type="hidden" name="GetterId" value="@item.Id" />
+                            <input type="hidden" name="Score" value="" id="scoreHidden_@item.Id" />
+                            @if (Model.Grades.FirstOrDefault(x => x.Setter.Id == Model.User.Id && x.Getter.Id == item.Id) is not null)
+                            {
+                                <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-info">Submit</button>
+                            }
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
 </table>
+
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach an event listener to all input fields with the name "score"
+        var scoreInputs = document.querySelectorAll('input[name="score"]');
+        
+        scoreInputs.forEach(function (scoreInput) {
+            scoreInput.addEventListener('input', function () {
+                var id = scoreInput.getAttribute('data-id');
+                var scoreHiddenInput = document.getElementById('scoreHidden_' + id);
+                scoreHiddenInput.value = this.value;
+            });
+        });
+    });
+</script>
+
+
+

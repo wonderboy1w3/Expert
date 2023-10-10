@@ -7,16 +7,19 @@ namespace Expert.Web.Controllers;
 public class GradesController : Controller
 {
     private readonly IGradeService _gradeService;
+    private readonly IUserService _userService;
 
-    public GradesController(IGradeService gradeService)
+    public GradesController(IGradeService gradeService, IUserService userService)
     {
         _gradeService = gradeService;
+        _userService = userService;
     }
 
     public async Task<IActionResult> Create(GradeCreationDto dto)
     {
         var result = await _gradeService.CreateAsync(dto);
-        return Redirect($"index/{dto.GetterId}");
+        var user = await _userService.GetAsync(dto.SetterId);
+        return RedirectToAction("Index", "Users", user);
     }
 
     [HttpGet("index/{userId:long}")]

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Security.Claims;
+using Expert.Web.Models;
 
 namespace Expert.Web.Controllers;
 
@@ -22,16 +23,11 @@ public class UsersController : Controller
         _gradeService = gradeService;
     }
     
-    public async Task<IActionResult> Index(UserResultDto dto = null, long? userId = null, int? score = null)
+    public async Task<IActionResult> Index(UserResultDto dto = null)
     {
-
         var users = await _userService.GetAllAsync();
-        if(userId is not null)
-        {
-            var user = users.FirstOrDefault(t => t.Id.Equals(userId));
-
-        }
-        return View((dto ,users));
+        var grades = await _gradeService.GetAllAsync();
+        return View(new UserViewModel() { User = dto, Users = users, Grades = grades});
     }
 
     public IActionResult Login()
@@ -48,7 +44,7 @@ public class UsersController : Controller
         var user = await _userService.CheckAsync(model.UserName, model.Password);
         if (user is null)
         {
-            ModelState.AddModelError("", "Логин или пароль пользователя указаны неверно");
+            ModelState.AddModelError("", "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
             return View(model);
         }
 
@@ -68,11 +64,6 @@ public class UsersController : Controller
         var user = await _userService.CreateAsync(dto);
         if(user is null)    
             return RedirectToAction("register");
-        return RedirectToAction("index");
-    }
-    
-    public async Task<IActionResult> User(long id)
-    {
-        return View((await _userService.GetAsync(id), await _gradeService.GetAsync(id)));
+        return RedirectToAction("index", user);
     }
 }

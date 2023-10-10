@@ -8,5 +8,5 @@ public class UserResultDto
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
 	public string UserName { get; set; }
-	public List<GradeResultDto> Grades { get; set; }
+	public int Score { get; set; }
 }

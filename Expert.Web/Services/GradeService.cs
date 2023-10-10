@@ -71,12 +71,13 @@ public class GradeService : IGradeService
 
 	public async ValueTask<IEnumerable<GradeResultDto>> GetAllAsync()
 	{
-		var grades = this.appDbContext.Grades.GroupBy(grade => grade.GetterId);
+		var grades = await this.appDbContext.Grades.ToListAsync();
 	
 		var result = new List<GradeResultDto>();
         foreach (var grade in grades)
         {
-			var getter = await this.appDbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(grade.Key));
+			var getter = await this.appDbContext.Users.FirstOrDefaultAsync(x => x.Id == grade.GetterId);
+			var setter = await this.appDbContext.Users.FirstOrDefaultAsync(x => x.Id == grade.SetterId);
 			var mappedGetter = new UserResultDto
 			{
 				Id = getter.Id,
@@ -85,10 +86,19 @@ public class GradeService : IGradeService
 				UserName = getter.UserName
 			};
 			
+			var mappedSetter = new UserResultDto
+			{
+				Id = setter.Id,
+				FirstName = setter.FirstName,
+				LastName = setter.LastName,
+				UserName = setter.UserName
+			};
+			
 			result.Add(new GradeResultDto
 			{
 				Getter = mappedGetter,
-				Score = grade.Average(g => g.Score)
+				Setter = mappedSetter,
+				Score = grade.Score
 			});
         }
 		
@@ -120,6 +130,32 @@ public class GradeService : IGradeService
 		}
 		
 		return result;
+	}
+
+	public async ValueTask<IEnumerable<(long UserId, int Average)>> GetAllAverageAsync()
+	{
+		List<(long UserId, int Average)> result = new ();
+		var users = await appDbContext.Users.ToListAsync();
+
+		foreach (var user in users)
+		{
+			var grades = appDbContext.Grades.Where(x => x.GetterId == user.Id);
+			if(grades.Count() > 0) 
+				result.Add((user.Id, (int)Math.Round(grades.Average(x => x.Score))));
+			else
+				result.Add((user.Id, 0));
+		}
+
+		return result;
+	}
+	
+	public async ValueTask<int> GetAverageAsync(long userId)
+	{
+		var grades = appDbContext.Grades.Where(x => x.GetterId == userId);
+		if(grades.Count() > 0) 
+			return (int)Math.Round(grades.Average(x => x.Score));
+		else
+			return 0;
 	}
 	
 	public async ValueTask<GradeResultDto> GetAsync(long userId)

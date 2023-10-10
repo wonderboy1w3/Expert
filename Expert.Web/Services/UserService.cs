@@ -11,9 +11,12 @@ namespace Expert.Web.Services;
 public class UserService : IUserService
 {
 	private readonly AppDbContext appDbContext;
-    public UserService(AppDbContext appDbContext)
+	private readonly IGradeService gradeService;
+	
+    public UserService(AppDbContext appDbContext, IGradeService gradeService)
     {
-		this.appDbContext = appDbContext;
+	    this.appDbContext = appDbContext;
+	    this.gradeService = gradeService;
     }
 
     public async ValueTask<UserResultDto> CreateAsync(UserCreationDto dto)
@@ -33,7 +36,8 @@ public class UserService : IUserService
 			Id = createdUser.Id,
 			LastName = createdUser.LastName,
 			FirstName = createdUser.FirstName,
-			UserName = dto.UserName
+			UserName = dto.UserName,
+			Score = await gradeService.GetAverageAsync(createdUser.Id)
 		};
 	}
 
@@ -60,7 +64,8 @@ public class UserService : IUserService
 				Id = user.Id,
 				FirstName = user.FirstName,
 				LastName =  user.LastName,
-				UserName = user.UserName
+				UserName = user.UserName,
+				Score = await gradeService.GetAverageAsync(user.Id)
 			});
         }
 
@@ -77,7 +82,8 @@ public class UserService : IUserService
 			Id = user.Id,
 			LastName = user.LastName,
 			FirstName = user.FirstName,
-			UserName = user.UserName
+			UserName = user.UserName,
+			Score = await gradeService.GetAverageAsync(user.Id)
 		};
 	}
 
@@ -94,7 +100,8 @@ public class UserService : IUserService
 					Id = user.Id,
 					LastName = user.LastName,
 					FirstName = user.FirstName,
-					UserName = user.UserName
+					UserName = user.UserName,
+					Score = await gradeService.GetAverageAsync(user.Id)
 				};
 		}
 		return null;
