@@ -26,7 +26,7 @@ public class GradeService : IGradeService
 		var grade = await appDbContext.Grades
 			.FirstOrDefaultAsync(x => x.GetterId == dto.GetterId && x.SetterId == dto.SetterId);
 
-		if (grade is not null)
+		if (grade is not null || dto.GetterId == dto.SetterId)
 			throw new CustomException(401, "You already set grade to this user");
 		
 		var createdGrade = (await this.appDbContext.Grades.AddAsync(new Grade
