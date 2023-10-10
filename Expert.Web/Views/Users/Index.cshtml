@@ -1,62 +1,25 @@
-@model (Expert.Web.DTOs.UserResultDto, IEnumerable<Expert.Web.DTOs.UserResultDto>)
-
-@{
-    Layout = null;
-}
+﻿@using Expert.Web.DTOs;
+@model UserViewModel;
     
-<h2>User List</h2>
-
-<table class="table" >
+<table class="table table-hover">
     <thead>
         <tr>
-            <th>User ID</th>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Action</th>
-            <th>Details</th>
-        </tr>
+            <th scope="col">#</th>
+            <th scope="col">Firstname</th>
+            <th scope="col">Lastname</th>
+            <th scope="col"></th>
+            </tr>
     </thead>
-    <tbody>
-        @if (Model.Item2 is not null)
-        {
-            @foreach (var user in Model.Item2)
-            {   
-                @if (Model.Item1.Id != user.Id)
-                {
-                    <tr>
-                        <td>@user.Id</td>
-                        <td>@user.FirstName</td>
-                        <td>@user.LastName</td>
-                        <td>
-                            <button type="button" onclick="openMessageBox(@user.Id)">Open Message Box</button>
-                        </td>
-                        <td>
-                            <form asp-controller="Grades" asp-action="Index" method="get">
-                                <button type="submit" class="btn-primary">
-                                    Details
-                                    <input type="hidden" name="userId" value="@user.Id"/>
-                                </button>
-                            </form>
-                        </td>
-                        </tr>
-                    <div id="messageBox-@user.Id" style="display: none;">
-                        <form asp-controller="Grades" asp-action="Create" method="post">
-                            <input type="hidden" name="dto.GetterId" value="@user.Id" />
-                            <input type="hidden" name="dto.SetterId" value="@Model.Item1.Id" />
-                            <label for="score-@user.Id">Enter Score: </label>
-                            <input type="number" id="score-@user.Id" name="dto.Score" required />
-                            <button type="submit">Submit</button>
-                        </form>
-                    </div>
-                }
-            }
-        }
-    </tbody>
-</table>
-
-<script>
-    function openMessageBox(userId) {
-        var messageBox = document.getElementById('messageBox-' + userId);
-        messageBox.style.display = 'block';
+    @foreach(var item in Model.Users)
+    {
+        <tbody>
+            <tr>
+                <th>@item.Id</th>
+                <th>@item.FirstName</th>
+                <th>@item.LastName</th>
+                <th><input type="number" id="typeNumber" asp-for="Score" class="form-control"/></th>
+                <th><button type="button" asp-action="index" class="btn btn-info">Submit</button></th>
+            </tr>
+        </tbody>
     }
-</script>
+</table>

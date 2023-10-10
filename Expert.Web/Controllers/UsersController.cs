@@ -1,7 +1,13 @@
 using Expert.Web.DTOs;
 using Expert.Web.Interfaces;
+using Expert.Web.Models.Account;
 using Expert.Web.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
+using System.Security.Claims;
 
 namespace Expert.Web.Controllers;
 
@@ -16,27 +22,39 @@ public class UsersController : Controller
         _gradeService = gradeService;
     }
     
-    public async Task<IActionResult> Index(UserResultDto dto = null)
+    public async Task<IActionResult> Index(UserResultDto dto = null, long? userId = null, int? score = null)
     {
-        return View((dto ,await _userService.GetAllAsync()));
+
+        var users = await _userService.GetAllAsync();
+        if(userId is not null)
+        {
+            var user = users.FirstOrDefault(t => t.Id.Equals(userId));
+
+        }
+        return View((dto ,users));
     }
 
     public IActionResult Login()
     {
         return View();
     }
-    
-    [HttpPost]
-    public async Task<IActionResult> Login(string login, string password)
+
+    [AllowAnonymous]
+    [HttpPost()]
+    public async Task<IActionResult> Login(LoginModel model)
     {
-        var user = await _userService.CheckAsync(login, password);
-        if (user is not null)
+        var returnUrl = TempData["ReturnUrl"] as string;
+
+        var user = await _userService.CheckAsync(model.UserName, model.Password);
+        if (user is null)
         {
-            return RedirectToAction("Index", user);
-        }    
-        TempData["ErrorMessage"] = "Invalid username or password";
-        return Redirect("/login");
+            ModelState.AddModelError("", "Ћогин или пароль пользовател€ указаны неверно");
+            return View(model);
+        }
+
+        return RedirectToAction("index", user);
     }
+
 
     public IActionResult Register()
     {

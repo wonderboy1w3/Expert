@@ -1,18 +1,56 @@
+@using Expert.Web.Models.Account;
+@model LoginModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Account";
 }
+<!--Main Navigation-->
+<header>
+    <style>
+        #intro {
+            height: 10vh;
+        }
 
-<h2>Login</h2>
+        .navbar .nav-link {
+            color: #fff !important;
+        }
+    </style>
 
-<form asp-controller="Users" asp-action="Login" method="post">
-    <div class="form-group">
-        <label for="login">Username:</label>
-        <input type="text" class="form-control" id="login" name="Login" required>
+    <!-- Background image -->
+    <div id="intro">
+        <div class="mask d-flex align-items-center h-100">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-5 col-md-8">
+
+                        <form asp-action="login" asp-controller="users" method="post"
+                              class="bg-white mb-3  rounded-5 shadow-5-strong p-5" method="post">
+                            <!-- Email input -->
+
+                            <div class="form-outline mb-4">
+                                <input type="tel" asp-for="UserName" required class="form-control phone-number" />
+                                <label class="form-label" asp-for="UserName">Login</label>
+                                <span class="text-danger text-sm-start" asp-validation-for="UserName"></span>
+                            </div>
+
+                            <!-- Password input -->
+                            <div class="form-outline mb-4">
+                                <input type="password" asp-for="Password" required class="form-control" />
+                                <label class="form-label" asp-for="Password">Password</label>
+                                <span class="text-danger text-sm-start" asp-validation-for="Password"></span>
+                            </div>
+
+                            <!-- Submit button -->
+                            <button type="submit" data-mdb-ripple-color="#386f06" class="btn btn-primary btn-block">Submit</button>
+                        </form>
+                        <div class="alert-danger">
+                            @Html.ValidationSummary(true)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" name="Password" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+    <!-- Background image -->
+</header>
+<!--Main Navigation-->

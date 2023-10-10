@@ -86,7 +86,7 @@ public class UserService : IUserService
 		if (appDbContext.Users.Count() > 0)
 		{
 			var user = await this.appDbContext.Users.FirstOrDefaultAsync(user => user.UserName.Equals(login.ToLower()))
-				       ?? throw new CustomException(404, "User is not found");
+				       ?? null;
 			
 			if(user.Password == password)
 				return new UserResultDto
@@ -97,6 +97,6 @@ public class UserService : IUserService
 					UserName = user.UserName
 				};
 		}
-		throw new CustomException(404, "User is not found");
+		return null;
 	}
 }
