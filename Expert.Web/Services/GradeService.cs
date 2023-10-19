@@ -19,6 +19,9 @@ public class GradeService : IGradeService
 	{
 		var existGetter = appDbContext.Users.Find(dto.GetterId);
 		var existSetter = appDbContext.Users.Find(dto.SetterId);
+
+		if (dto.Score > 20 || dto.Score < 0)
+			throw new CustomException(403, "Score should be between 20 and 0");
 		
 		if (existGetter is null || existSetter is null)
 			throw new CustomException(401, "This user not found");

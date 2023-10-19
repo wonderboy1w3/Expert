@@ -1,5 +1,8 @@
 ﻿@using Expert.Web.DTOs
 @model UserViewModel
+@{
+    var count = 0;
+}
 
 <table class="table table-hover">
     <thead>
@@ -8,44 +11,64 @@
             <th scope="col">Firstname</th>
             <th scope="col">Lastname</th>
             <th scope="col">Score</th>
+            <th scope="col">Setters</th>
             <th scope="col">Set Score</th>
-            <th scope="col">Your Score: @Model.User.Score</th>
+            @if (@Model.User.Score != 0)
+            {
+                <th scope="col">Your Score: @Model.User.Score</th>
+            }
+            else
+            {
+                <th scope="col">Your Score: N/A</th>
+            }
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Users)
+        @foreach (var item in Model.Users.OrderByDescending(x => x.Score))
         {
-            @if (item.Id != Model.User.Id)
+            @if (item.Id != 25)
             {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.FirstName</td>
-                    <td>@item.LastName</td>
-                    <td>@item.Score</td>
-                    <td>
-                        <input type="number" name="score" class="form-control"
-                               min="0" max="20" step="1" data-id="@item.Id" />
-                    </td>
-                    <td>
-                        <form asp-controller="Grades" asp-action="Create" method="post" onsubmit="return confirm('Are you sure you want to submit this form?');">
-                            <input type="hidden" name="SetterId" value="@Model.User.Id" />
-                            <input type="hidden" name="GetterId" value="@item.Id" />
-                            <input type="hidden" name="Score" value="" id="scoreHidden_@item.Id" />
-                            @if (Model.Grades.FirstOrDefault(x => x.Setter.Id == Model.User.Id && x.Getter.Id == item.Id) is not null)
-                            {
-                                <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
-                            }
-                            else if (Model.User is null)
-                            {
-                                <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
-                            }
-                            else
-                            {
-                                <button type="submit" class="btn btn-info">Submit</button>
-                            }
-                        </form>
-                    </td>
-                </tr>
+                count++;
+                @if (item.Id != Model.User.Id)
+                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        @if (item.Score == 0)
+                        {
+                            <td>N/A</td>
+                        }
+                        else
+                        {   
+                            <td>@item.Score</td>
+                        }
+                        <td>@Model.Grades.Where(x => x.Getter.Id == item.Id).Count()</td>
+                        <td>
+                            <input type="number" name="score" class="form-control"
+                                   min="0" max="20" step="1" data-id="@item.Id" />
+                        </td>
+                        <td>
+                            <form asp-controller="Grades" asp-action="Create" method="post" onsubmit="return confirm('Are you sure you want to submit this form?');">
+                                <input type="hidden" name="SetterId" value="@Model.User.Id" />
+                                <input type="hidden" name="GetterId" value="@item.Id" />
+                                <input type="hidden" name="Score" value="" id="scoreHidden_@item.Id" />
+                                @if (Model.Grades.FirstOrDefault(x => x.Setter.Id == Model.User.Id && x.Getter.Id == item.Id) is not null)
+                                {
+                                    <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
+                                }
+                                else if (Model.User is null)
+                                {
+                                    <button type="submit" disabled="disabled" class="btn btn-warning">Submit</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-info">Submit</button>
+                                }
+                            </form>
+                        </td>
+                    </tr>
+                }
             }
         }
     </tbody>
